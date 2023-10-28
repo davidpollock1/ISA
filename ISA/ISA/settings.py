@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-v!i!-ob^9papi81ty*hk1$@61t%42=l!16fej=ddqa@skx@-ba"
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,10 +81,10 @@ WSGI_APPLICATION = "ISA.wsgi.application"
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ISAdev',
-        'USER': 'isa_user',
-        'PASSWORD': 'b3lgr@de',
-        'HOST': 'localhost',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.environ['DATABASE_PASS'],
+        'HOST': os.environ['HOST'],
         'PORT': '',
     }
 }
