@@ -13,6 +13,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
@@ -26,6 +27,8 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 
@@ -36,7 +39,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'users.apps.UsersConfig',
     'rest_framework',
     'eventcalendar',
     'corsheaders',
@@ -122,6 +124,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'build/static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
