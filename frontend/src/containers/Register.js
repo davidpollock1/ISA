@@ -26,7 +26,7 @@ const Register = ({ register })=> {
     };
 
     if (accountCreated)
-         return <Navigate to='/' />;
+         return <Navigate to='/login' />;
     return (
         <div className='container mt-5'>
             <h1>Register Here</h1>
