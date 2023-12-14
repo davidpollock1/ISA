@@ -4,14 +4,18 @@ import datetime
 
         
 class Events(models.Model):
+    EVENT_TYPES = (
+    (1, 'Lesson'),
+    (2, 'Unavailable'),
+    )
     events_id = models.BigAutoField(primary_key=True)
     requested_by_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     requested_for_user_id = models.CharField(max_length=30, null=False)
     event_date_time = models.DateTimeField(null=False)
-    event_type = models.CharField(max_length=30)
+    event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES, default=1)
     date_created = models.DateTimeField(auto_now_add=True, null=False)
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
-    active = models.BooleanField(null=False)
+    active = models.BooleanField(null=False, default=True)
     
     
     class Meta:
@@ -31,10 +35,16 @@ class LessonRequest(models.Model):
     lesson_request_id = models.BigAutoField(primary_key=True)
     instructor_id = models.ForeignKey('user_profile.Instructor', on_delete=models.CASCADE)
     student_id = models.ForeignKey('user_profile.Student', on_delete=models.CASCADE)
-    requested_datetime = models.DateTimeField(null=False)
-    date_created = models.DateTimeField(null=False)
-    status = models.PositiveSmallIntegerField(choices=REQUEST_STATUSES, default=1)
     
+    requested_datetime = models.DateTimeField(null=False)
+    date_created = models.DateTimeField(null=False, auto_now_add=True)
+    
+    lesson_duration = models.DurationField(null=False)
+    lesson_type = models.CharField(max_length=30)
+    lesson_address = models.CharField(max_length=255, blank=True, null=True)
+    
+    status = models.PositiveSmallIntegerField(choices=REQUEST_STATUSES, default=1)
+    notes = models.CharField(max_length=250, blank=True, null=True)
 
 class EventStudent(models.Model):
     event_student_id = models.BigAutoField(primary_key=True)
