@@ -317,3 +317,4 @@ ISA/db.sqlite3
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+angular-frontend/.editorconfig
