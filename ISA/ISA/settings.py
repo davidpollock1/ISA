@@ -2,16 +2,13 @@ from pathlib import Path
 import datetime
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -25,10 +22,24 @@ REST_FRAMEWORK = {
     ]
 }
 
+# CORS
 CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:8080", ]
 
 CORS_ALLOW_CREDENTIALS = True
 
+#CSRF
+
+CSRF_COOKIE_SAMESITE = 'None'
+
+CSRF_COOKIE_SECURE = True
+
+CSRF_USE_SESSIONS = False
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
+
+# CSRF_COOKIE_DOMAIN='localhost'
 
 # Application definition
 
@@ -125,18 +136,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# AUTH_PROFILE_MODULE = 'users.MyUser'
-
-# AUTH_USER_MODEL = 'users.MyUser'
-
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
-#     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
-# }
