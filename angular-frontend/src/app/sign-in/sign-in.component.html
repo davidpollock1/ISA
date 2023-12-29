@@ -1,0 +1,63 @@
+<div class="flex items-start justify-center h-screen mt-20">
+    <div role="tablist" class="tabs tabs-lifted size-1/2">
+        <input type="radio" name="my_tabs_2" role="tab" class="tab" style="white-space: nowrap;" aria-label="Sign In"
+            checked />
+        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+            <div class="card-body items-center">
+                <div class="text-center">
+                    <h2 class="card-title">Sign In</h2>
+                </div>
+                <form [formGroup]="signInForm">
+                    <div class="form-group mb-3">
+                        <label for="username">Username:</label>
+                        <input id="username" type="text" class="form-control"
+                            class="input input-bordered input-sm w-full max-w-xs" formControlName="username"
+                            placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password">Password:</label>
+                        <input id="password" type="password" class="form-control"
+                            class="input input-bordered w-full max-w-xs" formControlName="password"
+                            placeholder="Enter your password" required>
+                    </div>
+                    <a href="/">Forgot your password?</a>
+                    <div class="card-actions justify-end text-center">
+                        <button (click)="signIn()" class="btn btn-primary">Sign In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Register" />
+        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+            <div class="card-body items-center">
+                <div class="text-center">
+                    <h2 class="card-title">Register</h2>
+                </div>
+                <form [formGroup]="signInForm">
+                    <div class="form-group mb-3">
+                        <label for="username">Username:</label>
+                        <input id="username" type="text" class="form-control"
+                            class="input input-bordered w-full max-w-xs" formControlName="username"
+                            placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password">Password:</label>
+                        <input id="password" type="password" class="form-control"
+                            class="input input-bordered w-full max-w-xs" formControlName="password"
+                            placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="re_password">Confirm Password:</label>
+                        <input id="re_password" type="password" class="form-control"
+                            class="input input-bordered w-full max-w-xs" formControlName="re_password"
+                            placeholder="Confirm password" required>
+                    </div>
+                    <div class="card-actions justify-end text-center">
+                        <button (click)="register()" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

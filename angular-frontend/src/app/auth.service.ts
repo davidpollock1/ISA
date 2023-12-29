@@ -22,9 +22,7 @@ export class AuthService {
     );
   }
 
-  register(username: string, password: string): Observable<any> {
-
-    var re_password = "pass123"
+  register(username: string, password: string, re_password: string): Observable<any> {
 
     const body = { username, password, re_password };
     return this.http.post(`${this.apiUrl}/accounts/register`, body, { withCredentials: true})
