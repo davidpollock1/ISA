@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NavbarComponent } from './navbar/navbar.component';
 import routeConfig from './app.routes';
-import { CsrfInterceptorService } from './csrf-interceptor.service';
+// import { CsrfInterceptorService } from './csrf-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -20,8 +20,8 @@ import { CsrfInterceptorService } from './csrf-interceptor.service';
     BrowserModule,
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
-      cookieName: "csrftoken", // Adjust if needed
-      headerName: "X-CSRFToken", // Adjust if needed
+      cookieName: "csrftoken",
+      headerName: "X-CSRFToken",
     }),
     RouterModule.forRoot(
       routeConfig),
