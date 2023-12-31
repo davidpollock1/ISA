@@ -7,14 +7,17 @@ import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NavbarComponent } from './navbar/navbar.component';
 import routeConfig from './app.routes';
-// import { CsrfInterceptorService } from './csrf-interceptor.service';
+import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
+import { ScheduleViewComponent } from './dashboard/schedule-view/schedule-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LayoutComponent,
-    NavbarComponent
+    NavbarComponent,
+    DashboardComponent,
+    ScheduleViewComponent
   ],
   imports: [
     BrowserModule,

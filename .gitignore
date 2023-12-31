@@ -319,3 +319,4 @@ yarn-debug.log*
 yarn-error.log*
 angular-frontend/.editorconfig
 /throwaway
+/angular-frontend/src/assets
