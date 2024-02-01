@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from.serializers import EventsSerializer, LessonRequestSerializer
-from .models import Events
+from .models import Events, LessonRequest
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 
@@ -22,20 +22,21 @@ class EventCreationView(APIView):
         
 
 class EventApprovedView(APIView):
-    serializer = EventsSerializer
+    serializer = LessonRequestSerializer
     
     def patch(self, request, format=None):
-        event_id = request.data.get('event_id')
-        if not event_id:
-            return Response({'error': 'event_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        lesson_request_id = request.data.get('lesson_request_id')
+        if not lesson_request_id:
+            return Response({'error': 'lesson_request_id is required'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            event = Events.objects.get(id=event_id)
-        except Events.DoesNotExist:
-            return Response({'error': 'Event not found'}, status=-status.HTTP_404_NOT_FOUND)
+            lesson_request = LessonRequest.objects.get(lesson_request_id=lesson_request_id)
+        except LessonRequest.DoesNotExist:
+            return Response({'error': 'Lesson request not found'}, status=-status.HTTP_404_NOT_FOUND)
         
-        serializer = self.serializer(event, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(approved=True)  # Update the 'approved' field to True
+        serializer = self.serializer(lesson_request, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            
+            serializer.save(status=2)  # Update status field. 
 
         return Response(serializer.data)
     
