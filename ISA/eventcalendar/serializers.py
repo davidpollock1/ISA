@@ -4,7 +4,7 @@ from .models import Events, LessonRequest
 class EventsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields =['requested_by_user_id', 'requested_for_user_id', 'event_date_time', 'event_type', 'active', 'approved']
+        fields ='__all__'
     
     requested_by_user_id = serializers.ReadOnlyField(source='requested_by_user_id.user')
     

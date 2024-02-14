@@ -9,7 +9,7 @@ class Events(models.Model):
     (2, 'Unavailable'),
     )
     events_id = models.BigAutoField(primary_key=True)
-    requested_by_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    requested_by_user_id = models.CharField(max_length=30, null=False)
     requested_for_user_id = models.CharField(max_length=30, null=False)
     event_date_time = models.DateTimeField(null=False)
     event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES, default=1)
