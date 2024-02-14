@@ -9,6 +9,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import routeConfig from './app.routes';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 import { ScheduleViewComponent } from './dashboard/schedule-view/schedule-view.component';
+import { DatePickerComponent } from './date-picker/date-picker.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,11 +19,13 @@ import { ScheduleViewComponent } from './dashboard/schedule-view/schedule-view.c
     LayoutComponent,
     NavbarComponent,
     DashboardComponent,
-    ScheduleViewComponent
+    ScheduleViewComponent,
+    DatePickerComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     HttpClientXsrfModule.withOptions({
       cookieName: "csrftoken",
       headerName: "X-CSRFToken",
