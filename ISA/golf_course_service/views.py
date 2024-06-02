@@ -1,4 +1,5 @@
 from rest_framework import status, permissions
+from .permissions import CustomerAccessPermission
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Customer, GolfCourse, GolfCourseGroup
@@ -10,7 +11,7 @@ from django.utils.decorators import method_decorator
 @method_decorator(csrf_protect, name='dispatch')
 class CustomerView(APIView):
     
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = ([CustomerAccessPermission])
     
     def post(self, request, format=None, customer_data=None):
         try:
@@ -33,3 +34,15 @@ class CustomerView(APIView):
         except Customer.DoesNotExist:
             return Response({'error': 'No customer found'}, status=status.HTTP_404_NOT_FOUND)
         
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class GolfCourse(APIView):
+    
+    permission_classes = ([])
+    
+    def post(self, request, format=None):
+        pass
+    
+    def get(self, request, pk, format=None):
+        pass

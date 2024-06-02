@@ -320,3 +320,6 @@ yarn-error.log*
 angular-frontend/.editorconfig
 /throwaway
 /angular-frontend/src/assets
+ISA/.dockerignore
+ISA/compose.yaml
+ISA/README.Docker.md
