@@ -2,12 +2,13 @@ from pathlib import Path
 import datetime
 import os
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 DEBUG = True
 
@@ -51,10 +52,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'rest_framework',
-    'eventcalendar',
     'corsheaders',
     'accounts',
     'user_profile',
+    'golf_course_service',
 ]
 
 MIDDLEWARE = [
@@ -94,10 +95,10 @@ WSGI_APPLICATION = "ISA.wsgi.application"
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['DATABASE_NAME'],
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASS'],
-        'HOST': os.environ['HOST'],
+        'NAME': str(os.getenv('DATABASE_NAME')),
+        'USER': str(os.getenv('DATABASE_USER')),
+        'PASSWORD': str(os.getenv('DATABASE_PASS')),
+        'HOST': str(os.getenv('HOST')),
         'PORT': '',
     }
 }
@@ -131,9 +132,9 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build/static')
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'build/static')
+# ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
