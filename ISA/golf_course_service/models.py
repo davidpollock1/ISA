@@ -1,6 +1,5 @@
 from django.db import models
-# from django.conf import settings
-# import datetime
+from localflavor.us.forms import USStateField, USZipCodeField
 
 
 class Customer(models.Model):
@@ -16,7 +15,8 @@ class GolfCourse(models.Model):
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
     active = models.BooleanField(null=False, default=True)
     
-    customer_id = models.ForeignKey('Customer', on_delete=models.CASCADE)
+    customer = models.ForeignKey('Customer', on_delete=models.RESTRICT)
+    golf_course_group = models.ForeignKey('GolfCourseGroup', on_delete=models.RESTRICT)
     
     class Meta:
         verbose_name = "GolfCourse"
@@ -26,9 +26,12 @@ class GolfCourse(models.Model):
         return self.golf_course_id, self.golf_course_name, self.customer_id
         
 class GolfCourseGroup(models.Model):
-    golf_courses = models.ManyToManyField(GolfCourse)
+    name = models.CharField(max_length=50, blank=False, null=False)
+    street_address = models.CharField(max_length=50, blank=False, null=False)
+    state = models.CharField(max_length=3, blank=False, null=False)
+    zip_code = models.CharField(max_length=5, blank=False, null=False)
+    active = models.BooleanField(null=False, default=True)
     date_created = models.DateTimeField(auto_now_add=True, null=False)
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
-    active = models.BooleanField(null=False, default=True)
     
-    customer_id = models.ForeignKey('Customer', on_delete=models.CASCADE)
+    customer = models.ForeignKey('Customer', on_delete=models.RESTRICT)

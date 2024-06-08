@@ -18,7 +18,7 @@ class CustomerAccessPermission(permissions.BasePermission):
         if obj.author == request.user:
             return True
         
-        if obj.customer_id  == request.user.customer_id:
+        if obj.customer_id  == request.user.customer:
             return True
 
         return False
@@ -27,6 +27,9 @@ class GolfCourseAccessPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.user.is_staff:
+            return True
+        
+        if request.user.userprofile.customer:
             return True
         
         if request.method in permissions.SAFE_METHODS:
@@ -38,10 +41,8 @@ class GolfCourseAccessPermission(permissions.BasePermission):
         if request.user.is_staff:
             return True
         
-        if obj.author == request.user:
-            return True
         
-        if obj.customer_id  == request.user.customer_id:
+        if obj.customer  == request.user.userprofile.customer:
             return True
 
         return False
