@@ -1,5 +1,4 @@
 from django.db import models
-from localflavor.us.forms import USStateField, USZipCodeField
 
 
 class Customer(models.Model):

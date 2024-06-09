@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'accounts',
     'user_profile',
     'golf_course_service',
+    'tee_sheet_service',
 ]
 
 MIDDLEWARE = [
