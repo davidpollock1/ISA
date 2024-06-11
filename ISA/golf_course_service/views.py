@@ -1,6 +1,4 @@
-from ast import Raise
-from email.policy import HTTP
-from rest_framework import status, permissions
+from rest_framework import status
 from .permissions import CustomerAccessPermission, GolfCourseAccessPermission
 from rest_framework.views import APIView
 from rest_framework.response import Response

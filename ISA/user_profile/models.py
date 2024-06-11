@@ -14,3 +14,8 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.first_name
     
+    def get_customer(self):
+        if(self.customer):
+            return self.customer
+        
+        return None
