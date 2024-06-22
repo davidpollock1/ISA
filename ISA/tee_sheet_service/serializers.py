@@ -15,3 +15,8 @@ class TeeTimeSlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeeTimeSlot
         fields = '__all__'
+        
+class TeeSheetTimeGeneratorRequest(serializers.Serializer):
+    tee_sheet_settings_id = serializers.IntegerField();
+    start_date = serializers.DateField();
+    end_date = serializers.DateField();

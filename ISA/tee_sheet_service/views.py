@@ -1,50 +1,52 @@
-from email.policy import HTTP
+from tracemalloc import start
+from rest_framework import status
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from rest_framework import generics
-from .models import TeeSheetSettings
-from .serializers import TeeSheetSettingsSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import TeeSheetSettings, TeeSheetTime, TeeTimeSlot
+from .serializers import TeeSheetSettingsSerializer, TeeSheetTimeGeneratorRequest
 from ISA.permissions import IsCustomerData
-from user_profile.models import UserProfile
+from .utils import generate_tee_times, generate_tee_time_slots
 
-# @method_decorator(csrf_protect, name='dispatch')
-# class TeeSheetSettingsView(APIView):
-#     permission_classes = ([CustomerAccessPermission])
-#     def get(self, request, pk, format=None):
-#         try:
-                        
-#             tee_sheet_settings = TeeSheetSettings.objects.get(tee_sheet_settings_id=pk)
-            
-#             return Response(tee_sheet_settings.data, status=status.HTTP_200_OK)
-#         except:
-#             return Response({ 'error': 'Something went wrong retrieving the user profile'})
+@method_decorator(csrf_protect, name='dispatch')
+class TeeSheetSettingsCreateView(APIView):
         
-#     def post(self, request, format=None):
-#         try:
-#             data = request.data
-#             tee_sheet_settings = self.request.user.userprofile
-            
-#             if tee_sheet_settings.customer_id is None:
-#                 return Response(status=status.HTTP_403_FORBIDDEN)
-            
-#             tee_sheet_settings_data = { **data, 'customer': tee_sheet_settings.customer.customer_id}
-                
-#             serializer = TeeSheetSettingsSerializer(data=tee_sheet_settings_data)
-            
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-#             else:
-#                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception as ex:
-#             return Response(ex, status=status.HTTP_400_BAD_REQUEST)
+    permission_classes = ([IsCustomerData])
+    
+    def post(self, request, *args, **kwargs):
+            serializer = TeeSheetSettingsSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                try:
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                except Exception as ex:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 @method_decorator(csrf_protect, name='dispatch')
-class TeeSheetSettingsCreateView(generics.CreateAPIView):
-    queryset = TeeSheetSettings.objects.all()
-    serializer_class = TeeSheetSettingsSerializer
-    permission_classes = [IsCustomerData]
+class TeeSheetTimeGeneratorView(APIView):
+    
+    permission_classes = ([IsCustomerData])
 
-    def perform_create(self, serializer):
-        user_profile = UserProfile.objects.get(user=self.request.user)
-        serializer.save(customer_id=user_profile.customer_id, created_by=self.request.user)
+    def post(self, request, format=None):
+        serializer = TeeSheetTimeGeneratorRequest(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            validated_data = serializer.validated_data
+            tee_sheet_settings_id = validated_data['tee_sheet_settings_id']
+            start_date = validated_data['start_date']
+            end_date = validated_data['end_date']
+            try:
+                tee_sheet_settings = TeeSheetSettings.objects.get(tee_sheet_settings_id = tee_sheet_settings_id)
+                            
+                tee_sheet_times = generate_tee_times(tee_sheet_settings=tee_sheet_settings, start_date=start_date, end_date=end_date)
+                
+                TeeSheetTime.objects.bulk_create(tee_sheet_times)
+                
+                for tee_sheet_time in tee_sheet_times:
+                    tee_sheet_time.save()
+                    tee_time_slots = generate_tee_time_slots(tee_sheet_time, tee_sheet_settings.number_of_slots)
+                    TeeTimeSlot.objects.bulk_create(tee_time_slots)
+                
+            except Exception as ex:
+                return Response(ex, status=status.HTTP_400_BAD_REQUEST)

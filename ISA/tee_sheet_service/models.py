@@ -14,6 +14,10 @@ class TeeSheetSettings(models.Model):
     golf_course = models.ForeignKey('golf_course_service.GolfCourse', on_delete=models.RESTRICT)
     customer = models.ForeignKey('golf_course_service.Customer', on_delete=models.RESTRICT)
     
+    class Meta:
+        verbose_name = "TeeSheetSettings"
+        db_table = 'TEE_SHEET_SETTINGS'
+    
 class TeeSheetTime(models.Model):
     tee_sheet_time_id = models.BigAutoField(primary_key=True)
     time = models.DateTimeField(blank=False, null=False)
@@ -22,6 +26,9 @@ class TeeSheetTime(models.Model):
     tee_sheet_settings = models.ForeignKey('TeeSheetSettings', on_delete=models.RESTRICT)
     customer = models.ForeignKey('golf_course_service.Customer', on_delete=models.RESTRICT)
     golf_course = models.ForeignKey('golf_course_service.GolfCourse', on_delete=models.RESTRICT)
+    class Meta:
+        verbose_name = "TeeSheetTime"
+        db_table = 'TEE_SHEET_TIME'
 
 class TeeTimeSlot(models.Model):
     STATUSES = ((1, 'Available'),(2, 'Booked'),(3, 'On_Hold'))
@@ -30,5 +37,9 @@ class TeeTimeSlot(models.Model):
     
     tee_sheet_time = models.ForeignKey('TeeSheetTime', on_delete=models.CASCADE)
     customer = models.ForeignKey('golf_course_service.Customer', on_delete=models.RESTRICT)
-    user = models.ForeignKey('user_profile.Userprofile', on_delete=models.RESTRICT)
+    user = models.ForeignKey('user_profile.Userprofile', on_delete=models.RESTRICT, null=True)
     # probably need relationship to order here. Pending... 
+    
+    class Meta:
+        verbose_name = "TeeTimeSlots"
+        db_table = 'TEE_TIME_SLOT'
