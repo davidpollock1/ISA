@@ -1,4 +1,5 @@
 from tracemalloc import start
+from xmlrpc.client import ResponseError
 from rest_framework import status
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
@@ -6,7 +7,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import TeeSheetSettings, TeeSheetTime, TeeTimeSlot
-from .serializers import TeeSheetSettingsSerializer, TeeSheetTimeGeneratorRequest
+from .serializers import TeeSheetSettingsSerializer, TeeSheetTimeGeneratorRequest, TeeTimesFilterSerializer, TeeSheetTimeSerializer
 from ISA.permissions import IsCustomerData
 from .utils import generate_tee_times, generate_tee_time_slots
 
@@ -50,3 +51,29 @@ class TeeSheetTimeGeneratorView(APIView):
                 
             except Exception as ex:
                 return Response(ex, status=status.HTTP_400_BAD_REQUEST)
+            
+@method_decorator(csrf_protect, name='dispatch')
+class TeeSheetView(APIView):
+    
+    permission_classes = ([])
+
+    def get(self, request, format=None):
+        serializer = TeeTimesFilterSerializer(data=request.query_params)
+        
+        if serializer.is_valid(raise_exception=True):
+            validated_data = serializer.validated_data
+            date = validated_data['date']
+            golf_course_group = validated_data.get('golf_course_group')
+            golf_course = validated_data.get('golf_course')
+            
+            try:
+                queryset = TeeSheetTime.objects.filter(time__date=date)
+                if golf_course_group:
+                    queryset = queryset.filter(golf_course_group=golf_course_group)
+                if golf_course:
+                    queryset = queryset.filter(golf_course=golf_course)
+
+                results = TeeSheetTimeSerializer(queryset, many=True).data
+                return Response(results, status=status.HTTP_200_OK)
+            except Exception as ex:
+                Response(ex, status=status.HTTP_400_BAD_REQUEST)
