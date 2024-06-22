@@ -7,7 +7,10 @@ class Customer(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=False)
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
     active = models.BooleanField(null=False, default=True)
-
+    class Meta:
+        verbose_name = "Customer"
+        db_table = 'CUSTOMER'
+        
 class GolfCourse(models.Model):
     golf_course_name = models.CharField(max_length=50, blank=False, null=False)
     date_created = models.DateTimeField(auto_now_add=True, null=False)
@@ -19,6 +22,7 @@ class GolfCourse(models.Model):
     
     class Meta:
         verbose_name = "GolfCourse"
+        db_table = 'GOLF_COURSE'
         # ordering = ('date_created'),
     
     def __str__(self) -> str:
@@ -34,3 +38,7 @@ class GolfCourseGroup(models.Model):
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
     
     customer = models.ForeignKey('Customer', on_delete=models.RESTRICT)
+    
+    class Meta:
+        verbose_name = "GolfCourseGroup"
+        db_table = 'GOLF_COURSE_GROUP'

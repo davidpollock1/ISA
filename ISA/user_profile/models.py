@@ -19,3 +19,7 @@ class UserProfile(models.Model):
             return self.customer
         
         return None
+    
+    class Meta:
+        verbose_name = "UserProfile"
+        db_table = 'USER_PROFILE'
