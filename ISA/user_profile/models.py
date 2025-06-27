@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from golf_course_service.models import Customer
+from core.models import TenantAwareModel
 
-class UserProfile(models.Model):
+class UserProfile(TenantAwareModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     first_name = models.CharField(max_length=255, default='')
     last_name = models.CharField(max_length=255, default='')
     phone = models.CharField(max_length=20, default='')

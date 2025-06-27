@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import GolfCourse, Customer, GolfCourseGroup
+from .models import GolfCourse, GolfCourseGroup
+from core.models import Customer
 
 class GolfCourseSerializer(serializers.ModelSerializer):
     class Meta:

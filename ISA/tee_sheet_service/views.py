@@ -49,7 +49,7 @@ class TeeSheetTimeGeneratorView(APIView):
                     tee_time_slots = generate_tee_time_slots(tee_sheet_time, tee_sheet_settings.number_of_slots)
                     TeeTimeSlot.objects.bulk_create(tee_time_slots)
                 
-            except Exception as ex:
+            except Exception as ex: 
                 return Response(ex, status=status.HTTP_400_BAD_REQUEST)
             
 @method_decorator(csrf_protect, name='dispatch')
@@ -58,7 +58,7 @@ class TeeSheetView(APIView):
     permission_classes = ([])
 
     def get(self, request, format=None):
-        serializer = TeeTimesFilterSerializer(data=request.query_params)
+        serializer = TeeTimesFilterSerializer(data=request.data)
         
         if serializer.is_valid(raise_exception=True):
             validated_data = serializer.validated_data

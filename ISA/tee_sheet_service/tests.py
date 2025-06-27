@@ -1,7 +1,8 @@
 import json
 from django.test import TestCase
 from django.contrib.auth.models import User
-from golf_course_service.models import GolfCourse, Customer, GolfCourseGroup
+from golf_course_service.models import GolfCourse, GolfCourseGroup
+from core.models import Customer
 from user_profile.models import UserProfile
 from .models import TeeSheetSettings
 from django.urls import reverse

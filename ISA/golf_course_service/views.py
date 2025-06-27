@@ -2,7 +2,8 @@ from rest_framework import status
 from .permissions import CustomerAccessPermission, GolfCourseAccessPermission
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Customer, GolfCourse, GolfCourseGroup
+from .models import GolfCourse, GolfCourseGroup
+from core.models import Customer
 from .serializers import CustomerSerializer, GolfCourseSerializer, GolfCourseGroupSerializer
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator

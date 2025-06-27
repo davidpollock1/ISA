@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { CsrfTokenService } from '../csrf-token.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class SignInComponent {
 
   constructor(
     private authService: AuthService,
-    private csrfTokenService: CsrfTokenService) {}
+    private csrfTokenService: CsrfTokenService,
+    private router: Router ) {}
 
   ngOnInit(): void {
     this.csrfTokenService.fetchCsrfToken()
@@ -38,7 +40,7 @@ export class SignInComponent {
     this.authService.login(username, password).subscribe(
       (success) => {
         if (success) {
-          // whatever else we want to do when log in is successful. 
+          this.router.navigate(['/dashboard']);
           console.log('Login Successful');
         } else {
           // whatever else we want to do when login fails

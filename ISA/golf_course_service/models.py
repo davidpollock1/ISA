@@ -1,23 +1,13 @@
 from django.db import models
+from core.models import TenantAwareModel
 
-
-class Customer(models.Model):
-    customer_id = models.BigAutoField(primary_key=True)
-    customer_name = models.CharField(max_length=50, blank=False, null=False)
-    date_created = models.DateTimeField(auto_now_add=True, null=False)
-    date_last_updated = models.DateTimeField(auto_now=True, null=False)
-    active = models.BooleanField(null=False, default=True)
-    class Meta:
-        verbose_name = "Customer"
-        db_table = 'CUSTOMER'
         
-class GolfCourse(models.Model):
+class GolfCourse(TenantAwareModel):
     golf_course_name = models.CharField(max_length=50, blank=False, null=False)
     date_created = models.DateTimeField(auto_now_add=True, null=False)
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
     active = models.BooleanField(null=False, default=True)
     
-    customer = models.ForeignKey('Customer', on_delete=models.RESTRICT)
     golf_course_group = models.ForeignKey('GolfCourseGroup', on_delete=models.RESTRICT)
     
     class Meta:
@@ -28,7 +18,7 @@ class GolfCourse(models.Model):
     def __str__(self) -> str:
         return self.golf_course_id, self.golf_course_name, self.customer_id
         
-class GolfCourseGroup(models.Model):
+class GolfCourseGroup(TenantAwareModel):
     name = models.CharField(max_length=50, blank=False, null=False)
     street_address = models.CharField(max_length=50, blank=False, null=False)
     state = models.CharField(max_length=3, blank=False, null=False)
@@ -36,9 +26,7 @@ class GolfCourseGroup(models.Model):
     active = models.BooleanField(null=False, default=True)
     date_created = models.DateTimeField(auto_now_add=True, null=False)
     date_last_updated = models.DateTimeField(auto_now=True, null=False)
-    
-    customer = models.ForeignKey('Customer', on_delete=models.RESTRICT)
-    
+        
     class Meta:
         verbose_name = "GolfCourseGroup"
         db_table = 'GOLF_COURSE_GROUP'
