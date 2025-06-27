@@ -13,26 +13,24 @@ import { Router } from '@angular/router';
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css'
 })
-export class SignInComponent {
 
+export class SignInComponent {
   signInForm = new FormGroup({
     username: new FormControl(),
     password: new FormControl(),
     re_password: new FormControl()
   })
 
-
   constructor(
     private authService: AuthService,
     private csrfTokenService: CsrfTokenService,
-    private router: Router ) {}
+    private router: Router) { }
 
   ngOnInit(): void {
     this.csrfTokenService.fetchCsrfToken()
   }
 
   signIn(): void {
-
     const formValues = this.signInForm.value;
     const username = formValues.username;
     const password = formValues.password;
@@ -43,7 +41,6 @@ export class SignInComponent {
           this.router.navigate(['/dashboard']);
           console.log('Login Successful');
         } else {
-          // whatever else we want to do when login fails
           console.log('Login failed');
         }
       },
@@ -54,7 +51,6 @@ export class SignInComponent {
   }
 
   register(): void {
-
     const formValues = this.signInForm.value;
     const username = formValues.username;
     const password = formValues.password;

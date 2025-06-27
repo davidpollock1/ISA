@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CsrfTokenService } from './csrf-token.service';
+import { environment } from '../environments/environment';
 
 
 @Injectable({
@@ -10,26 +11,25 @@ import { CsrfTokenService } from './csrf-token.service';
 })
 
 export class AuthService {
-  private apiUrl = '//localhost:8000'
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
 
   login(username: string, password: string): Observable<any> {
-    
+
     const body = { username, password };
-    return this.http.post(`${this.apiUrl}/accounts/login`, body,  { withCredentials: true }
+    return this.http.post(`${this.apiUrl}/accounts/login`, body, { withCredentials: true }
     );
   }
 
   register(username: string, password: string, re_password: string): Observable<any> {
 
     const body = { username, password, re_password };
-    return this.http.post(`${this.apiUrl}/accounts/register`, body, { withCredentials: true})
+    return this.http.post(`${this.apiUrl}/accounts/register`, body, { withCredentials: true })
   }
 
   logout(): void {
-    // Perform any necessary cleanup and token removal
     this.removeAccessToken();
   }
 

@@ -323,3 +323,4 @@ angular-frontend/.editorconfig
 ISA/.dockerignore
 ISA/compose.yaml
 ISA/README.Docker.md
+/angular-frontend/src/environments
