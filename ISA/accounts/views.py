@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from rest_framework import permissions
+from rest_framework import permissions, status
 from django.contrib import auth
 from rest_framework.response import Response
-from user_profile.models import UserProfile
-from .serializers import UserSerializer
+from .models import UserProfile
+from .serializers import SignupSerializer, UserSerializer, UserProfileSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 
@@ -31,36 +31,14 @@ class SignupView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        data = self.request.data
+        serializer = SignupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        username = data["username"]
-        password = data["password"]
-        re_password = data["re_password"]
-        try:
-            if password == re_password:
-                if User.objects.filter(username=username).exists():
-                    return Response({"error": "Username already exists"})
-                else:
-                    if len(password) < 6:
-                        return Response(
-                            {"error": "Password must be at least 6 characters"}
-                        )
-                    else:
-                        user = User.objects.create_user(
-                            username=username, password=password
-                        )
-
-                        user = User.objects.get(id=user.id)
-
-                        user_profile = UserProfile.objects.create(
-                            user=user, first_name="", last_name="", phone="", city=""
-                        )
-
-                        return Response({"success": "User created successfully"})
-            else:
-                return Response({"error": "Passwords do not match"})
-        except:
-            return Response({"error": "Something went wrong when registering account"})
+        user = serializer.save()
+        return Response(
+            {"success": "User created successfully", "username": user.username},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -124,3 +102,48 @@ class GetUsersView(APIView):
 
         users = UserSerializer(users, many=True)
         return Response(users.data)
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class GetUserProfileView(APIView):
+    def get(self, request, format=None):
+        try:
+            user = self.request.user
+            username = user.username
+
+            user_profile = UserProfile.objects.get(user=user)
+            user_profile = UserProfileSerializer(user_profile)
+
+            return Response({"profile": user_profile.data, "username": str(username)})
+        except:
+            return Response(
+                {"error": "Something went wrong retrieving the user profile"}
+            )
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class UpdateUserProfileView(APIView):
+    def put(self, request, format=None):
+        try:
+            user = self.request.user
+            username = user.username
+
+            data = self.request.data
+
+            fields_to_update = {}
+
+            # Get all the fields in the UserProfile model
+            model_fields = [field.name for field in UserProfile._meta.get_fields()]
+
+            for field in model_fields:
+                if field in data:
+                    fields_to_update[field] = data[field]
+
+            UserProfile.objects.filter(user=user).update(**fields_to_update)
+
+            user_profile = UserProfile.objects.get(user=user)
+            user_profile = UserProfileSerializer(user_profile)
+
+            return Response({"profile": user_profile.data, "username": str(username)})
+        except:
+            return Response({"error": "Something went wrong updating the user profile"})
