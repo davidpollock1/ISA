@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from rest_framework import permissions, status
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import login, logout
 from rest_framework.response import Response
 from .models import UserProfile
@@ -28,7 +29,7 @@ class CheckAuthenticatedView(APIView):
 
 @method_decorator(csrf_protect, name="dispatch")
 class SignupView(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (AllowAny,)
 
     def post(self, request, format=None):
         serializer = SignupSerializer(data=request.data)
@@ -43,7 +44,7 @@ class SignupView(APIView):
 
 @method_decorator(csrf_protect, name="dispatch")
 class LoginVIew(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (AllowAny,)
 
     def post(self, request, format=None):
         serializer = LoginSerializer(data=request.data)
@@ -69,14 +70,14 @@ class LogoutView(APIView):
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
 class GetCSRFToken(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (AllowAny,)
 
     def get(self, request, format=None):
         return Response({"success": "CSRF cookie set"})
 
 
 class DeleteAccountView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, format=None):
         user = request.user
@@ -88,20 +89,10 @@ class DeleteAccountView(APIView):
         )
 
 
-class GetUsersView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    serializer = UserSerializer
-
-    def get(self, request, format=None):
-        users = User.objects.all()
-
-        users = UserSerializer(users, many=True)
-        return Response(users.data)
-
-
 @method_decorator(csrf_protect, name="dispatch")
 class GetUserProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, format=None):
         user = request.user
         user_profile = UserProfile.objects.get(user=user)
