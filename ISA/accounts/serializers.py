@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import UserProfile
 from django.db import transaction
+from django.contrib.auth import authenticate
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,6 +15,27 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = "__all__"
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(username=data["username"], password=data["password"])
+
+        if user is None:
+            raise serializers.ValidationError("Invalid username or password")
+        if not user.is_active:
+            raise serializers.ValidationError("User account is disabled")
+        data["user"] = user
+        return data
 
 
 class SignupSerializer(serializers.Serializer):
