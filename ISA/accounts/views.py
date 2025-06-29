@@ -1,29 +1,29 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework import permissions, status
-from django.contrib import auth
+from django.contrib.auth import login, logout
 from rest_framework.response import Response
 from .models import UserProfile
-from .serializers import SignupSerializer, UserSerializer, UserProfileSerializer
+from .serializers import (
+    LoginSerializer,
+    SignupSerializer,
+    UserSerializer,
+    UserProfileSerializer,
+)
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 
 
 @method_decorator(csrf_protect, name="dispatch")
 class CheckAuthenticatedView(APIView):
-    def get(self, request, format=None):
-        user = self.request.user
-        try:
-            isAuthenticated = user.is_authenticated
+    def get(self, request):
+        user = request.user
+        isAuthenticated = user.is_authenticated
 
-            if isAuthenticated:
-                return Response({"isAuthenticated": "success"})
-            else:
-                return Response({"isAuthenticated": "error"})
-        except:
-            Response(
-                {"error": "Something went wrong when checking authentication status"}
-            )
+        if isAuthenticated:
+            return Response({"isAuthenticated": "success"})
+        else:
+            return Response({"isAuthenticated": "error"})
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -46,29 +46,25 @@ class LoginVIew(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        data = self.request.data
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        username = data["username"]
-        password = data["password"]
-        try:
-            user = auth.authenticate(username=username, password=password)
+        user = serializer.validated_data["user"]
+        login(request, user)
 
-            if user is not None:
-                auth.login(request, user)
-                return Response({"success": "User authenticated", "username": username})
-            else:
-                return Response({"error": "Error Authenticating"})
-        except:
-            return Response({"error": "Something went wrong when loggin in"})
+        return Response(
+            {"success": True, "username": user.username, "email": user.email},
+            status=status.HTTP_200_OK,
+        )
 
 
 class LogoutView(APIView):
     def post(self, request, format=None):
-        try:
-            auth.logout(request)
-            return Response({"success": "Logged Out"})
-        except:
-            return Response({"error": "Something went wrong when logging out"})
+        logout(request)
+        return Response(
+            {"success": "Logged Out"},
+            status=status.HTTP_200_OK,
+        )
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
@@ -80,16 +76,16 @@ class GetCSRFToken(APIView):
 
 
 class DeleteAccountView(APIView):
-    def delete(self, request, format=None):
-        user = self.request.user
-        try:
-            user = User.objects.filter(id=user.id).delete()
+    permission_classes = [permissions.IsAuthenticated]
 
-            return Response({"success": "User deleted successfully"})
-        except:
-            return Response(
-                {"error": "Something went wrong when trying to delete user"}
-            )
+    def delete(self, request, format=None):
+        user = request.user
+        username = user.username
+        user.delete()
+        return Response(
+            {"success": f"User '{username}' has been deleted."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class GetUsersView(APIView):
@@ -107,43 +103,27 @@ class GetUsersView(APIView):
 @method_decorator(csrf_protect, name="dispatch")
 class GetUserProfileView(APIView):
     def get(self, request, format=None):
-        try:
-            user = self.request.user
-            username = user.username
+        user = request.user
+        user_profile = UserProfile.objects.get(user=user)
 
-            user_profile = UserProfile.objects.get(user=user)
-            user_profile = UserProfileSerializer(user_profile)
+        serializer = UserProfileSerializer(instance=user_profile)
 
-            return Response({"profile": user_profile.data, "username": str(username)})
-        except:
-            return Response(
-                {"error": "Something went wrong retrieving the user profile"}
-            )
+        return Response(
+            {"user_profile": serializer.data},
+            status=status.HTTP_200_OK,
+        )
 
 
 @method_decorator(csrf_protect, name="dispatch")
 class UpdateUserProfileView(APIView):
-    def put(self, request, format=None):
-        try:
-            user = self.request.user
-            username = user.username
-
-            data = self.request.data
-
-            fields_to_update = {}
-
-            # Get all the fields in the UserProfile model
-            model_fields = [field.name for field in UserProfile._meta.get_fields()]
-
-            for field in model_fields:
-                if field in data:
-                    fields_to_update[field] = data[field]
-
-            UserProfile.objects.filter(user=user).update(**fields_to_update)
-
-            user_profile = UserProfile.objects.get(user=user)
-            user_profile = UserProfileSerializer(user_profile)
-
-            return Response({"profile": user_profile.data, "username": str(username)})
-        except:
-            return Response({"error": "Something went wrong updating the user profile"})
+    def patch(self, request, format=None):
+        user_profile = request.user.userprofile
+        serializer = UserProfileSerializer(
+            user_profile, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"user_profile": serializer.data},
+            status=status.HTTP_200_OK,
+        )
