@@ -6,7 +6,6 @@ from .views import (
     LogoutView,
     CheckAuthenticatedView,
     DeleteAccountView,
-    GetUsersView,
     GetUserProfileView,
     UpdateUserProfileView,
 )
@@ -18,7 +17,6 @@ urlpatterns = [
     path("csrf_cookie", GetCSRFToken.as_view()),
     path("register", SignupView.as_view()),
     path("delete", DeleteAccountView.as_view()),
-    path("get_users", GetUsersView.as_view()),
     path("profile/user", GetUserProfileView.as_view()),
     path("profile/update", UpdateUserProfileView.as_view()),
 ]

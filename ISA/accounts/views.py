@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -8,7 +7,6 @@ from .models import UserProfile
 from .serializers import (
     LoginSerializer,
     SignupSerializer,
-    UserSerializer,
     UserProfileSerializer,
 )
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
