@@ -15,6 +15,9 @@ import { Router } from '@angular/router';
 })
 
 export class SignInComponent {
+  loginError: string | null = null;
+  nextUrl: string = '/dashboard'
+
   signInForm = new FormGroup({
     username: new FormControl(),
     password: new FormControl(),
@@ -35,19 +38,12 @@ export class SignInComponent {
     const username = formValues.username;
     const password = formValues.password;
 
-    this.authService.login(username, password).subscribe(
-      (success) => {
-        if (success) {
-          this.router.navigate(['/dashboard']);
-          console.log('Login Successful');
-        } else {
-          console.log('Login failed');
-        }
-      },
-      (error) => {
-        console.log('Login Error:', error);
+    this.authService.login(username, password).subscribe({
+      next: () => this.router.navigateByUrl(this.nextUrl),
+      error: (err) => {
+        this.loginError = err.error?.message;
       }
-    )
+    })
   }
 
   register(): void {
