@@ -7,6 +7,7 @@ from .models import UserProfile
 from .serializers import (
     LoginSerializer,
     SignupSerializer,
+    UserSerializer,
     UserProfileSerializer,
 )
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
@@ -15,14 +16,36 @@ from django.utils.decorators import method_decorator
 
 @method_decorator(csrf_protect, name="dispatch")
 class CheckAuthenticatedView(APIView):
-    def get(self, request):
-        user = request.user
-        isAuthenticated = user.is_authenticated
+    permission_classes = (IsAuthenticated,)
 
-        if isAuthenticated:
-            return Response({"isAuthenticated": "success"})
-        else:
-            return Response({"isAuthenticated": "error"})
+    def get(self, request):
+        return Response({"isAuthenticated": request.user.is_authenticated})
+
+
+class CurrentUserView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response(
+                {"isAuthenticated": False, "user": None, "profile": None},
+                status=status.HTTP_200_OK,
+            )
+
+        user = request.user
+        user_profile = UserProfile.objects.get(user=user)
+
+        user_serializer = UserSerializer(user)
+        profile_serializer = UserProfileSerializer(user_profile)
+
+        return Response(
+            {
+                "isAuthenticated": True,
+                "user": user_serializer.data,
+                "profile": profile_serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 @method_decorator(csrf_protect, name="dispatch")

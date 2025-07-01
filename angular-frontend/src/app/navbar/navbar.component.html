@@ -1,10 +1,12 @@
 <div class="navbar bg-base-100 py-2 shadow-md">
-    <div class="flex-1">
-        <a href="/" class="btn btn-ghost text-xl">ThreePar</a>
+  <div class="flex-1">
+    <a href="/" class="btn btn-ghost text-xl">ThreePar</a>
+  </div>
+  <div class="flex-none">
+    <div *ngIf="!(isLoggedIn$ | async)">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="sign-in">Login / Register</a></li>
+      </ul>
     </div>
-    <div class="flex-none">
-        <ul class="menu menu-horizontal px-1">
-            <li><a href="sign-in">Login / Register</a></li>
-        </ul>
-    </div>
+  </div>
 </div>

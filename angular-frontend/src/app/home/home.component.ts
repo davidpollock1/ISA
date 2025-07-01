@@ -9,12 +9,8 @@ import { AuthService } from '../auth.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      console.log("Auth reached")
-      this.router.navigate(['/dashboard']);
-    }
   }
 }

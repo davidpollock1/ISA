@@ -1,10 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { CsrfTokenService } from './csrf-token.service';
+import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 import { environment } from '../environments/environment';
 
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface UserProfile {
+  id: number;
+  user: number;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  city: string;
+  email: string;
+}
+
+export interface CurrentUserResponse {
+  isAuthenticated: boolean,
+  user: User;
+  profile: UserProfile;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,41 +31,66 @@ import { environment } from '../environments/environment';
 
 export class AuthService {
   private apiUrl = environment.apiUrl;
+  private currentUserSubject = new BehaviorSubject<CurrentUserResponse | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.checkCurrentUser().subscribe();
+  }
 
+  getCurrentUser(): Observable<CurrentUserResponse> {
+    return this.http.get<CurrentUserResponse>(`${this.apiUrl}/accounts/currentuser/`, {
+      withCredentials: true
+    }).pipe(
+      tap(response => this.currentUserSubject.next(response)),
+      catchError(error => {
+        this.currentUserSubject.next(null);
+        throw error;
+      })
+    );
+  }
+
+  checkCurrentUser(): Observable<CurrentUserResponse | null> {
+    return this.http.get<CurrentUserResponse>(`${this.apiUrl}/accounts/currentuser/`, {
+      withCredentials: true
+    }).pipe(
+      tap(response => this.currentUserSubject.next(response)),
+      catchError(error => {
+        this.currentUserSubject.next(null);
+        return of(null);
+      })
+    );
+  }
 
   login(username: string, password: string): Observable<any> {
-
     const body = { username, password };
-    return this.http.post(`${this.apiUrl}/accounts/login`, body, { withCredentials: true }
+    return this.http.post(`${this.apiUrl}/accounts/login/`, body, {
+      withCredentials: true
+    }).pipe(
+      tap(() => {
+        this.checkCurrentUser().subscribe();
+      })
     );
   }
 
   register(username: string, password: string, re_password: string): Observable<any> {
-
     const body = { username, password, re_password };
-    return this.http.post(`${this.apiUrl}/accounts/register`, body, { withCredentials: true })
+    return this.http.post(`${this.apiUrl}/accounts/register/`, body, {
+      withCredentials: true
+    });
   }
 
-  logout(): void {
-    this.removeAccessToken();
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/accounts/logout/`, {}, {
+      withCredentials: true
+    }).pipe(
+      tap(() => {
+        this.currentUserSubject.next(null);
+      })
+    );
   }
 
-  setAccessToken(token: string): void {
-    localStorage.setItem('access_token', token);
-  }
-
-  getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
-  }
-
-  removeAccessToken(): void {
-    localStorage.removeItem('access_token');
-  }
-
-  isAuthenticated(): boolean {
-    // Check if the user is authenticated based on your criteria (e.g., token existence)
-    return !!this.getAccessToken();
+  isLoggedIn(): boolean {
+    return this.currentUserSubject.value !== null;
   }
 }
