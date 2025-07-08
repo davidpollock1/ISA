@@ -3,10 +3,12 @@
     <a href="/" class="btn btn-ghost text-xl">ThreePar</a>
   </div>
   <div class="flex-none">
-    <div *ngIf="!(isLoggedIn$ | async)">
-      <ul class="menu menu-horizontal px-1">
-        <li><a href="sign-in">Login / Register</a></li>
-      </ul>
-    </div>
+    @if (!(isLoggedIn$ | async)) {
+      <div>
+        <ul class="menu menu-horizontal px-1">
+          <li><a href="sign-in">Login / Register</a></li>
+        </ul>
+      </div>
+    }
   </div>
 </div>
