@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-schedule-view',
-  templateUrl: './schedule-view.component.html',
-  styleUrl: './schedule-view.component.css'
+    selector: 'app-schedule-view',
+    templateUrl: './schedule-view.component.html',
+    styleUrl: './schedule-view.component.css',
+    standalone: false
 })
 export class ScheduleViewComponent {
 

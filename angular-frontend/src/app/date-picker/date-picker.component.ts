@@ -3,9 +3,10 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import flatpickr from 'flatpickr';
 
 @Component({
-  selector: 'app-date-picker',
-  templateUrl: './date-picker.component.html',
-  styleUrl: './date-picker.component.css'
+    selector: 'app-date-picker',
+    templateUrl: './date-picker.component.html',
+    styleUrl: './date-picker.component.css',
+    standalone: false
 })
 
 export class DatePickerComponent {
