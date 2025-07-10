@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { map } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.css',
+  standalone: false
 })
 export class NavbarComponent implements OnInit {
   currentUser$ = this.authService.currentUser$;

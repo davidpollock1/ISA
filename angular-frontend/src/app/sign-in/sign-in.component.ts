@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 @Component({
   providers: [AuthService],
   selector: 'app-sign-in',
-  standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css'

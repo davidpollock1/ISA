@@ -14,9 +14,11 @@
       class="tab-content bg-base-100 border-base-300 rounded-box p-6 w-96"
     >
       <div class="card-body items-center">
-        <div ngIf="loginError" class="error">
+        @if (loginError) {
+        <div class="error">
           {{ loginError }}
         </div>
+        }
         <div class="text-center">
           <h2 class="card-title">Sign In</h2>
         </div>
