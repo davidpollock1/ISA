@@ -10,14 +10,12 @@ import { AsyncPipe } from '@angular/common';
   standalone: false
 })
 export class NavbarComponent implements OnInit {
-  currentUser$ = this.authService.currentUser$;
   isLoggedIn$ = this.authService.currentUser$.pipe(
-    map(user => user !== null)
+    map(user => !!user && user.isAuthenticated)
   );
 
   constructor(private authService: AuthService) { }
   ngOnInit(): void {
-
   }
 
   get isLoggedIn(): boolean {
