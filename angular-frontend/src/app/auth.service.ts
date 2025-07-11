@@ -91,6 +91,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.currentUserSubject.value !== null;
+    const user = this.currentUserSubject.value;
+    return !!user && user.isAuthenticated === true;
   }
 }
