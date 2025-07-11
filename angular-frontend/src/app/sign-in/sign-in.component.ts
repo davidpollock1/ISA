@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 
 
 @Component({
-  providers: [AuthService],
   selector: 'app-sign-in',
   imports: [ReactiveFormsModule],
   templateUrl: './sign-in.component.html',

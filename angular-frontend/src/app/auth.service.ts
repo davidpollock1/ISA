@@ -12,7 +12,7 @@ export interface User {
 
 export interface UserProfile {
   id: number;
-  user: number;
+  type: string;
   first_name: string;
   last_name: string;
   phone: string;
