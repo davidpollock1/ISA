@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -10,16 +10,13 @@ import { AsyncPipe } from '@angular/common';
   standalone: false
 })
 export class NavbarComponent implements OnInit {
-  isLoggedIn$ = this.authService.currentUser$.pipe(
-    map(user => !!user && user.isAuthenticated)
-  );
+  isLoggedIn$: Observable<boolean>;
 
-  constructor(private authService: AuthService) { }
-  ngOnInit(): void {
+  constructor(private authService: AuthService) {
+    this.isLoggedIn$ = this.authService.isLoggedIn$
   }
-
-  get isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+  ngOnInit(): void {
+    this.authService.checkCurrentUser().subscribe();
   }
 
   logout() {

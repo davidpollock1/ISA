@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
 
 export interface User {
   id: number;
@@ -34,21 +35,13 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<CurrentUserResponse | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.checkCurrentUser().subscribe();
   }
 
-  getCurrentUser(): Observable<CurrentUserResponse> {
-    return this.http.get<CurrentUserResponse>(`${this.apiUrl}/accounts/currentuser/`, {
-      withCredentials: true
-    }).pipe(
-      tap(response => this.currentUserSubject.next(response)),
-      catchError(error => {
-        this.currentUserSubject.next(null);
-        throw error;
-      })
-    );
-  }
+  public isLoggedIn$ = this.currentUser$.pipe(
+    map(user => !!user?.isAuthenticated)
+  );
 
   checkCurrentUser(): Observable<CurrentUserResponse | null> {
     return this.http.get<CurrentUserResponse>(`${this.apiUrl}/accounts/currentuser/`, {
@@ -86,12 +79,8 @@ export class AuthService {
     }).pipe(
       tap(() => {
         this.currentUserSubject.next(null);
+        this.router.navigate(['/sign-in']);
       })
     );
-  }
-
-  isLoggedIn(): boolean {
-    const user = this.currentUserSubject.value;
-    return !!user && user.isAuthenticated === true;
   }
 }
