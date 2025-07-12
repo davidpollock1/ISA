@@ -1,19 +1,20 @@
 <div class="navbar bg-base-100 py-2 shadow-md">
   <div class="flex-1">
-    <a href="/" class="btn btn-ghost text-xl">ThreePar</a>
+    <a routerLink="/" class="btn btn-ghost text-xl">ThreePar</a>
+  </div>
+  <div class="navbar">
   </div>
   <div class="flex-none">
-    <ng-container *ngIf="isLoggedIn$ | async; then showLogout; else showLogin"></ng-container>
-    <ng-template #showLogout>
-      <ul class="menu menu-horizontal px-1">
+    <ul class="menu menu-horizontal px-1">
+      <li><a routerLink="dashboard">Dashboard</a></li>
+      <ng-container *ngIf="isLoggedIn$ | async; then showLogout; else showLogin"></ng-container>
+      <ng-template #showLogout>
         <button (click)="logout()">Logout</button>
-      </ul>
-    </ng-template>
-    <ng-template #showLogin>
-      <ul class="menu menu-horizontal px-1">
-        <li><a href="sign-in">Login / Register</a></li>
-      </ul>
-    </ng-template>
+      </ng-template>
+      <ng-template #showLogin>
+        <li><a routerLink="/sign-in">Login / Register</a></li>
+      </ng-template>
+    </ul>
     <div>
     </div>
   </div>

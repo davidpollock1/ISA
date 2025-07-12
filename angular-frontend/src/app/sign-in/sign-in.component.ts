@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 
 
 @Component({
-  providers: [AuthService],
   selector: 'app-sign-in',
   imports: [ReactiveFormsModule],
   templateUrl: './sign-in.component.html',
@@ -38,7 +37,7 @@ export class SignInComponent {
     const password = formValues.password;
 
     this.authService.login(username, password).subscribe({
-      next: () => this.router.navigateByUrl(this.nextUrl),
+      next: () => this.router.navigate([this.nextUrl]),
       error: (err) => {
         this.loginError = err.error?.message;
       }
