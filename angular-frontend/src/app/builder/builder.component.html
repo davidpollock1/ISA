@@ -1,0 +1,29 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <label>Survey Title:</label>
+    <input formControlName="title" class="input input-bordered mb-4" />
+
+    <div formArrayName="questions">
+        <div *ngFor="let q of questions.controls; let i = index" [formGroupName]="i" class="mb-6 border p-4 rounded">
+            <input formControlName="label" placeholder="Question label" class="input input-bordered mb-2" />
+
+            <select formControlName="type" class="select select-bordered mb-2">
+                <option value="text">Text</option>
+                <option value="select">Select</option>
+                <option value="checkbox">Checkbox</option>
+            </select>
+
+            <div *ngIf="q.get('type')?.value !== 'text'" formArrayName="options">
+                <div *ngFor="let opt of q.get('options')['controls']; let j = index">
+                    <input [formControlName]="j" class="input input-sm" />
+                    <button type="button" (click)="removeOption(i, j)">Remove Option</button>
+                </div>
+                <button type="button" (click)="addOption(i)">Add Option</button>
+            </div>
+
+            <button type="button" (click)="removeQuestion(i)" class="btn btn-sm mt-2">Remove Question</button>
+        </div>
+    </div>
+
+    <button type="button" (click)="addQuestion()" class="btn btn-outline mb-4">Add Question</button>
+    <button type="submit" class="btn btn-primary">Save Survey</button>
+</form>

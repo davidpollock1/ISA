@@ -8,8 +8,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NavbarComponent } from './navbar/navbar.component';
 import routeConfig from './app.routes';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
-import { ScheduleViewComponent } from './dashboard/schedule-view/schedule-view.component';
 import { FormsModule } from '@angular/forms';
+import { BuilderComponent } from "./builder/builder.component";
 
 @NgModule({
     declarations: [
@@ -18,11 +18,10 @@ import { FormsModule } from '@angular/forms';
         LayoutComponent,
         NavbarComponent,
         DashboardComponent,
-        ScheduleViewComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         FormsModule,
-        RouterModule.forRoot(routeConfig)], providers: [
+        RouterModule.forRoot(routeConfig), BuilderComponent], providers: [
             provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({
                 cookieName: "csrftoken",
                 headerName: "X-CSRFToken",

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ScheduleViewComponent } from '../schedule-view/schedule-view.component';
+import { BuilderComponent } from '../../builder/builder.component';
 
 @Component({
     selector: 'app-dashboard',
