@@ -1,29 +1,41 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
-    <label>Survey Title:</label>
-    <input formControlName="title" class="input input-bordered mb-4" />
+<form [formGroup]="surveyForm" (ngSubmit)="submit()">
+    <label class="input">
+        <span class="label">Survey Title:</span>
+        <input formControlName="title" />
+    </label>
 
-    <div formArrayName="questions">
-        <div *ngFor="let q of questions.controls; let i = index" [formGroupName]="i" class="mb-6 border p-4 rounded">
-            <input formControlName="label" placeholder="Question label" class="input input-bordered mb-2" />
+    <label>Internal Name:
+        <input formControlName="internalName" class="input input-bordered" />
+    </label>
+    <label>Start Date:
+        <input type="date" formControlName="startDate" class="input">
+    </label>
+    <label>End Date:
+        <input type="date" formControlName="endDate" class="input">
+    </label>
 
-            <select formControlName="type" class="select select-bordered mb-2">
-                <option value="text">Text</option>
-                <option value="select">Select</option>
-                <option value="checkbox">Checkbox</option>
+    <div formArrayName=" questions">
+        @for (question of questions.controls; track question; let i = $index) {
+        <div [formGroupName]="i">
+            <label> Name:
+                <input formControlName="label">
+            </label>
+
+            <label> Question:
+                <input formControlName="type">
+            </label>
+
+            <select formControlName="type">
+                @for (type of questionTypes; track type.value) {
+                <option [value]="type.value">{{ type.label }}</option>
+                }
             </select>
 
-            <div *ngIf="q.get('type')?.value !== 'text'" formArrayName="options">
-                <div *ngFor="let opt of q.get('options')['controls']; let j = index">
-                    <input [formControlName]="j" class="input input-sm" />
-                    <button type="button" (click)="removeOption(i, j)">Remove Option</button>
-                </div>
-                <button type="button" (click)="addOption(i)">Add Option</button>
-            </div>
-
-            <button type="button" (click)="removeQuestion(i)" class="btn btn-sm mt-2">Remove Question</button>
+            <button type="button" (click)="removeQuestion(i)">Remove</button>
         </div>
+        }
     </div>
 
-    <button type="button" (click)="addQuestion()" class="btn btn-outline mb-4">Add Question</button>
-    <button type="submit" class="btn btn-primary">Save Survey</button>
+    <button type="button" (click)="addQuestion()" class="btn">Add Question</button>
+    <button type="submit" class="btn">Save Survey</button>
 </form>

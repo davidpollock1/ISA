@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { QuestionType } from './models';
+
 
 @Component({
   selector: 'app-builder',
@@ -10,31 +11,44 @@ import { ReactiveFormsModule } from '@angular/forms';
   standalone: true
 })
 export class BuilderComponent {
-  form: FormGroup;
+  surveyForm = this.formBuilder.group({
+    title: ['', Validators.required],
+    internalName: ['', Validators.required],
+    startDate: [null, Validators.required],
+    endDate: [null, Validators.required],
+    tags: [[''], Validators.required],
+    questions: this.formBuilder.array([])
+  })
 
-  constructor(private formBuilder: FormBuilder) {
-    this.form = this.formBuilder.group({
-      title: [''],
-      questions: this.formBuilder.array([])
-    })
-  }
+  questionTypes: QuestionType[] = [
+    { value: 'text', label: 'Short Answer' },
+    { value: 'radio', label: 'Multiple Choice' },
+    { value: 'checkbox', label: 'Checkboxes' }
+  ];
+
+  constructor(private formBuilder: FormBuilder) { }
 
   get questions(): FormArray {
-    return this.form.get('questions') as FormArray;
+    return this.surveyForm.get('questions') as FormArray;
+  }
+
+  newQuestion(): FormGroup {
+    return this.formBuilder.group({
+      label: ['', Validators.required],
+      question: ['', Validators.required],
+      type: ['text', Validators.required],
+      options: this.formBuilder.array([])
+    });
   }
 
   addQuestion() {
-    const question = this.formBuilder.group({
-      label: [''],
-      type: ['text'],
-      options: this.formBuilder.array([])
-    });
-    this.questions.push(question);
+    this.questions.push(this.newQuestion());
   }
 
   removeQuestion(index: number) {
     this.questions.removeAt(index);
   }
+
   addOption(qIndex: number) {
     const options = this.questions.at(qIndex).get('options') as FormArray;
     options.push(this.formBuilder.control(''));
@@ -46,6 +60,6 @@ export class BuilderComponent {
   }
 
   submit() {
-    console.log(this.form.value);
+    console.log(this.surveyForm.value);
   }
 }
